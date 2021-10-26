@@ -2,10 +2,7 @@ const socket = io("/")
 const videoGrid = document.getElementById("video-grid");
 
 
-const myPeer = new Peer(undefined, {
-    host: "/",
-    port: "3001"
-});
+const myPeer = new Peer(undefined);
 
 const myVideo = document.createElement("video");
 myVideo.muted = true;
@@ -27,7 +24,7 @@ navigator.mediaDevices.getUserMedia({
     })
 
     socket.on("user-connected", userId => {
-        connectedToNewUser(userId, stream);
+        connectToNewUser(userId, stream);
     })
 
     socket.on("user-disconnected", userId => {
