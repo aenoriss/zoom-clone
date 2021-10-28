@@ -1,11 +1,10 @@
 const socket = io("/")
 const videoGrid = document.getElementById("video-grid");
 
-
 const myPeer = new Peer(undefined);
 
-const myVideo = document.createElement("video");
-myVideo.muted = true;
+const myAudio = document.createElement("audio");
+myAudio.muted = true;
 
 const peers = [];
 
@@ -13,13 +12,13 @@ navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true,
 }).then(stream => {
-    addVideoStream(myVideo, stream);
+    addVideoStream(myAudio, stream);
 
     myPeer.on("call", call => {
         call.answer(stream)
 
         call.on("stream", userVideoStream => {
-            addVideoStream(video, userVideoStream);
+            addVideoStream(audio, userVideoStream);
         })
     })
 
@@ -39,23 +38,23 @@ myPeer.on("open", id => {
 
 function connectToNewUser(userId, stream) {
     const call = myPeer.call(userId, stream);
-    const video = document.createElement("video");
+    const audio = document.createElement("audio");
     call.on("stream", userVideoStream => {
-        addVideoStream(video, userVideoStream)
+        addVideoStream(audio, userVideoStream)
     })
 
     call.on("close", () => {
-        video.remove()
+        audio.remove()
     })
 
     peers[userId] = call;
 }
 
-function addVideoStream(video, stream) {
-    video.srcObject = stream;
-    video.addEventListener("loadedmetadata", () => {
-        video.play()
+function addVideoStream(audio, stream) {
+    audio.srcObject = stream;
+    audio.addEventListener("loadedmetadata", () => {
+        audio.play()
     })
 
-    videoGrid.append(video)
+    videoGrid.append(audio)
 }
