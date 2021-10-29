@@ -96,8 +96,9 @@ io.on("connection", socket => {
             io.sockets.in(roomId).emit('user-position', userArr);
         })
 
-        io.sockets.in(roomId).emit('comet-position', comeTar);
-
+        socket.on("comet-movement", () => {
+            io.sockets.in(roomId).emit('comet-position', comeTar);
+        })
     })
 })
 
