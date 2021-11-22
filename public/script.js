@@ -3,7 +3,7 @@ const videoGrid = document.getElementById("video-grid");
 
 const myPeer = new Peer(undefined);
 
-const myAudio = document.createElement("video");
+const myAudio = document.createElement("audio");
 myAudio.muted = true;
 
 const peers = [];
