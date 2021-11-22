@@ -15,8 +15,6 @@ const io = require('socket.io')(server, {
     }
 });
 
-const { v4: uuidV4 } = require("uuid")
-
 const cors = require('cors');
 app.use(cors());
 app.options('*', cors());
@@ -27,6 +25,10 @@ app.use(express.static("public"));
 
 app.get('/userArr', (req, res) => {
     res.send(userArr);
+});
+
+app.get('/lol', (req, res) => {
+    res.send("asdasdasdasda");
 });
 
 for (let i = 0; i < 50; i++) {
