@@ -19,7 +19,7 @@ const io = require('socket.io')(server, {
 const cors = require('cors');
 app.use(cors());
 app.options('*', cors());
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: 'https://whispiverse-lake.vercel.app/' }));
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
