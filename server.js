@@ -28,7 +28,7 @@ app.get('/userArr', (req, res) => {
 });
 
 app.get('/lol', (req, res) => {
-    res.send("asdasdasdasda");
+    res.send("done");
 });
 
 for (let i = 0; i < 50; i++) {
