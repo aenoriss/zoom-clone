@@ -6,6 +6,7 @@ let userArr = {};
 let cometArr = [];
 let currentCometPos = [];
 let room;
+const PORT = process.env.PORT || 4100;
 
 //Generate coments
 
@@ -145,4 +146,4 @@ io.on("connection", socket => {
 
 
 
-server.listen(4100);
+server.listen(PORT);
