@@ -4,15 +4,10 @@ const server = require("http").Server(app);
 
 let userArr = {};
 let cometArr = [];
-let comeTar = []
+let currentCometPos = [];
+let room;
 
 //Generate coments
-
-
-
-console.log("cometArr", cometArr)
-
-
 
 const io = require('socket.io')(server, {
     cors: {
@@ -35,7 +30,7 @@ app.get('/userArr', (req, res) => {
 });
 
 for (let i = 0; i < 50; i++) {
-    cometArr.push(
+    currentCometPos.push(
         {
             position: {
                 x: (Math.random() - 0.5) * 100,
@@ -49,11 +44,28 @@ for (let i = 0; i < 50; i++) {
         }
     )
 
+    cometArr.push(
+        {
+            position: {
+                x: (Math.random() - 0.5) * 100,
+                y: (Math.random() - 0.5) * 100,
+                z: (Math.random() - 0.5) * 100,
+            },
+            rotation: {
+                x: Math.random() * Math.PI,
+                y: Math.random() * Math.PI
+            }
+        }
+    )
 }
 
-setInterval(function() {
+io.sockets.in(room).emit('comet-position', cometArr);
+console.log("SEND")
+
+setInterval(function () {
+    cometArr = [];
     for (let i = 0; i < 50; i++) {
-        comeTar.push(
+        cometArr.push(
             {
                 position: {
                     x: (Math.random() - 0.5) * 100,
@@ -66,28 +78,50 @@ setInterval(function() {
                 }
             }
         )
-        }
-  }, 15000);
+    }
+}, 25000);
+
+
+setInterval(function () {
+    cometArr = [];
+    for (let i = 0; i < 50; i++) {
+        cometArr.push(
+            {
+                position: {
+                    x: (Math.random() - 0.5) * 100,
+                    y: (Math.random() - 0.5) * 100,
+                    z: (Math.random() - 0.5) * 100,
+                },
+                rotation: {
+                    x: Math.random() * Math.PI,
+                    y: Math.random() * Math.PI
+                }
+            }
+        )
+    }
+    io.sockets.in(room).emit('comet-position', cometArr);
+    console.log("SEND")
+}, 25000);
+
 
 io.on("connection", socket => {
     console.log("HEHE")
     socket.on("join-room", (roomId, userId) => {
-        console.log(roomId, userId);
-        socket.join(roomId)
+        room = roomId
+        socket.join(roomId);
 
+        io.sockets.in(roomId).emit('comet-position', currentCometPos);
+        io.sockets.in(roomId).emit('comet-position', cometArr);
 
         //User Entity
         userArr[userId] = { x: 0, y: 0, z: 0 }
-        console.log(userArr)
 
         //Another user joined the room
         socket.broadcast.to(roomId).emit('user-connected', userId)
 
         socket.on("disconnect", () => {
             socket.broadcast.to(roomId).emit('user-disconnected', userId)
-            console.log("pre", userArr)
             delete userArr[userId]
-            console.log("after", userArr)
         })
 
         socket.on("movement", (movement, user) => {
@@ -96,11 +130,17 @@ io.on("connection", socket => {
             io.sockets.in(roomId).emit('user-position', userArr);
         })
 
-        socket.on("comet-movement", () => {
-            io.sockets.in(roomId).emit('comet-position', comeTar);
+        socket.on("comet", (cometMov) => {
+            currentCometPos = cometMov;
         })
+
+        socket.on("cometPost", (cometMov) => {
+            currentCometPos = cometMov;
+        })
+        
     })
 })
+
 
 
 server.listen(4100);
