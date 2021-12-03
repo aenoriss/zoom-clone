@@ -12,8 +12,8 @@ let cometArr = [];
 let currentCometPos = [];
 let portalNum = 0;
 let room;
-// const PORT = process.env.PORT || 4100;
-const PORT = 4100;
+const PORT = process.env.PORT || 4100;
+// const PORT = 4100;
 
 //Generate coments
 
